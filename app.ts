@@ -1,6 +1,9 @@
 window.onload = () => {
   const boardSize = 800;
-  let cells: number[][] = new Array(boardSize / 4);
+  const cellSize = 4;
+  let cells: number[][] = new Array(boardSize / cellSize);
+
+  const intialAliveCellsPercentage = 3;
 
 
   // Get reference to canvas
@@ -8,20 +11,16 @@ window.onload = () => {
   canvas.width = canvas.height = boardSize;
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = 'rgba(0, 0, 0, 1)';
-  
-  prepareBoard();
-  setInterval(draw,500);
-  
 
-  // Call 'draw' function whenever browser renders a frame on the screen
-  //window.requestAnimationFrame(draw);
+  prepareBoard();
+  setInterval(draw, 500);
+
 
   function draw() {
-    // Demo code showing how to draw in the canvas
 
-    let help = new Array(boardSize / 4);
+    let help = new Array(boardSize / cellSize);
     for (let i = 0; i < help.length; i++) {
-      help[i] = new Array(boardSize / 4);
+      help[i] = new Array(boardSize / cellSize);
 
     }
 
@@ -44,62 +43,46 @@ window.onload = () => {
 
       }
     }
-    ctx.clearRect(0,0,boardSize,boardSize);
+    ctx.clearRect(0, 0, boardSize, boardSize);
     cells = help;
     for (let i = 0; i < cells.length; i++) {
       for (let j = 0; j < cells[i].length; j++) {
         if (cells[i][j] == 1) {
-          ctx.fillRect((i * 4), (j * 4), 4, 4);
+          ctx.fillRect((i * cellSize), (j * cellSize), cellSize, cellSize);
         }
       }
     }
 
-    //window.requestAnimationFrame(draw);
   }
   function countNeighbors(i, j) {
     let count = 0;
 
     if (j != 0) {
-      if (cells[i][j - 1] == 1) {
-        count++;
-      }
-      if (i != 199) {
-        if (cells[i + 1][j - 1] == 1) {
-          count++;
-        }
+      count += cells[i][j - 1];
 
+      if (i != 199) {
+        count += cells[i + 1][j - 1];
       }
 
 
     }
     if (i != 199 && j != 199) {
-      if (cells[i + 1][j + 1] == 1) {
-        count++;
-      }
+      count += cells[i + 1][j + 1];
     }
-    if(i != 199){
-      if (cells[i + 1][j] == 1) {
-        count++;
-      }
+    if (i != 199) {
+      count += cells[i + 1][j];
+
     }
 
     if (j != 199) {
-      if (cells[i][j + 1] == 1) {
-        count++;
-      }
+      count += cells[i][j + 1];
+
     }
-
-
-
     if (i != 0) {
       if (j != 199) {
-        if (cells[i - 1][j + 1] == 1) {
-          count++;
-        }
+        count += cells[i - 1][j + 1];
       }
-      if (cells[i - 1][j] == 1) {
-        count++;
-      }
+      count += cells[i - 1][j];
     }
 
 
@@ -108,7 +91,7 @@ window.onload = () => {
   function prepareBoard() {
 
     for (let i = 0; i < cells.length; i++) {
-      cells[i] = new Array(boardSize / 4);
+      cells[i] = new Array(boardSize / cellSize);
 
     }
 
@@ -118,7 +101,7 @@ window.onload = () => {
       }
     }
     let aliveCells = 0;
-    while (aliveCells < 40000 * 0.03) {
+    while (aliveCells < ((boardSize / cellSize) * (boardSize / cellSize)) * (intialAliveCellsPercentage / 100)) {
       let coordinate = { x: Math.floor(Math.random() * cells.length), y: Math.floor(Math.random() * cells.length) };
       if (cells[coordinate.x][coordinate.y] == 0) {
         cells[coordinate.x][coordinate.y] = 1;
@@ -129,11 +112,8 @@ window.onload = () => {
     for (let i = 0; i < cells.length; i++) {
       for (let j = 0; j < cells[i].length; j++) {
         if (cells[i][j] == 1) {
-          ctx.fillRect((i * 4), (j * 4), 4, 4);
+          ctx.fillRect((i * cellSize), (j * cellSize), cellSize, cellSize);
         }
-
-
-
       }
     }
 
